@@ -12,7 +12,7 @@ var createApplication = function() {
 
 var startServer = function () {
 
-    var PORT = process.env.PORT || 1337;
+    var PORT = process.env.PORT || 5000;
 
     server.listen(PORT, function () {
         console.log(chalk.green('Server started on port', chalk.blue(PORT)));
