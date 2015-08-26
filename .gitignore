@@ -4,3 +4,5 @@ server/env
 /server/env/production.js
 server/env/development.js
 server/env/production.js
+node_modules
+/node_modules
