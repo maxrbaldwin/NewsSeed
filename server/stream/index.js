@@ -3,7 +3,8 @@ var Promise = require('bluebird');
 var Twitter = require('twitter');
 var path = require('path');
 
-var tweetFilter = require('./filter');
+var seedFilter = require('./filters/seed');
+var newsFilter = require('./filters/news');
 var streamError = require('./error');
 
 var env = require(path.join(__dirname, '../env'));
@@ -15,11 +16,20 @@ var client = new Twitter({
   access_token_secret: env.STREAM.access_token_secret
 });
 
-var streamParameters = {
+var seedStreamParameters = {
   follow: env.STREAM_IDS.AP
 };
 
-client.stream('statuses/filter', streamParameters, function(stream) {
-  stream.on('data', tweetFilter);
+var newsStreamParameters = {
+  follow: env.STREAM_IDS.NYT
+};
+
+client.stream('statuses/filter', seedStreamParameters, function(stream) {
+  stream.on('data', seedFilter);
+  stream.on('error', streamError);
+});
+
+client.stream('statuses/filter', newsStreamParameters, function(stream) {
+  stream.on('data', newsFilter);
   stream.on('error', streamError);
 });
