@@ -1,0 +1,31 @@
+{
+  "name": "news-feed",
+  "version": "1.0.0",
+  "description": "App that filters news org news feeds from Twitter",
+  "main": "server/start.js",
+  "scripts": {
+    "start": "nodemon server/start.js"
+  },
+  "keywords": [
+    "node",
+    "news",
+    "twitter"
+  ],
+  "author": "Max Baldwin",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^2.9.34",
+    "body-parser": "^1.13.3",
+    "chalk": "^1.1.1",
+    "cookie-parser": "^1.3.5",
+    "express": "^4.13.3",
+    "express-session": "^1.11.3",
+    "less-middleware": "^2.0.1",
+    "mongoose": "^4.1.3",
+    "swig": "^1.4.2",
+    "twitter": "^1.2.5"
+  },
+  "devDependencies": {
+    "nodemon": "^1.4.1"
+  }
+}
