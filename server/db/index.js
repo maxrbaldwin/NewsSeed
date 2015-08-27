@@ -9,6 +9,12 @@ var DATABASE_URI = env.DATABASE_URI;
 
 var db = mongoose.connect(DATABASE_URI).connection;
 
+/**
+* Will envoke Schemas so that they can be accessed by other files
+* As mongoose.model
+**/
+require('./models');
+
 var startDb = new Promise(function(resolve, reject) {
   db.on('connected', resolve);
   db.on('error', reject);
