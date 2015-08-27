@@ -11,7 +11,6 @@ var createApplication = function() {
 };
 
 var startServer = function () {
-
     var PORT = process.env.PORT || 5000;
 
     server.listen(PORT, function () {
