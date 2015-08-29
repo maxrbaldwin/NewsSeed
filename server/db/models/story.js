@@ -4,7 +4,7 @@ var ObjectId = Schema.Types.ObjectId;
 
 var StorySchema = new Schema({
   seedID: ObjectId,
-  tweetedBy: String,
+  tweetedId: ObjectId,
   title: String,
   link: String,
   img: String,
