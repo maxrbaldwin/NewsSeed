@@ -29,16 +29,18 @@ var seedFilter = function (tweet) {
         tweetedBy: tweetedBy
       });
     }
+    return;
   })
   .then(function(doc){
-    this.savedTweet = doc;
+    if(doc && filterKeywords) {
+      this.savedTweet = doc;
 
-    if(filterKeywords) {
       return Seed.findAsync({ keywords: { $in: filterKeywords } });
     }
+    return;
   })
   .then(function(docs){
-    if(docs.length === 0) {
+    if(docs && docs.length === 0) {
       newSeed = {
         associatedStoryIds: [],
         tweetId: this.savedTweet._id,
@@ -48,6 +50,7 @@ var seedFilter = function (tweet) {
       };
       return Seed.createAsync(newSeed);
     }
+    return;
   })
   .then(function(doc){
     if(doc) {
