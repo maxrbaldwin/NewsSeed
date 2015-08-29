@@ -1,0 +1,11 @@
+<ion-view view-title="My Seeds">
+  <ion-content>
+
+	<ion-list>
+		<ion-item ng-repeat="seed in mySeeds" href="#/app/seed/{{seed.id}}">
+			{{seed}}
+		</ion-item>
+    </ion-list>
+
+  </ion-content>
+</ion-view>

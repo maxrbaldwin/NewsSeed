@@ -1,0 +1,27 @@
+<ion-view view-title="Current Seeds">
+  <ion-content>
+
+	<ion-list>
+		<ion-item ng-repeat="seed in seeds" href="#/app/seed/{{seed.id}}">
+			{{seed}}
+		</ion-item>
+	</ion-list>
+
+	<form ng-submit="saveToStorage(s)">
+		<label class="item item-input">
+			<span class="input-label" >Set Secret Message</span>
+			<input type="text" ng-model="s">
+		</label>
+		<button type="submit">Save</button>
+	</form>
+
+	Not so secret: {{secret}}
+
+	<br>
+	<br>
+	<h4>Get Secret Message</h4>
+	<button ng-click="pingConsole()">Reveal</button>
+	{{revealedMessage}}
+
+  </ion-content>
+</ion-view>
