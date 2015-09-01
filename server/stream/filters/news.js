@@ -18,6 +18,7 @@ var Request = Promise.promisifyAll(request);
 var newsFilter = function(tweet) {
   var filterKeywords, tweetedBy, storyLink, newSeed, $;
 
+  // @TODO: Dont use the String constuctor
   var tweetToString = String(tweet.text);
   var keywords = tweetToString.split(' ');
 
@@ -31,21 +32,27 @@ var newsFilter = function(tweet) {
 
   if (!cache.check(storyLink, tweetToString)) {
     cache.set(storyLink, tweetToString);
-    
-    Tweet.createAsync({
-        text: tweetToString,
-        tweetedBy: tweetedBy,
-        keywords: filterKeywords
+
+    Tweet.findAsync({
+        text: tweetToString
+      })
+      .then(function(docs) {
+        if (docs && docs.length === 0) {
+          return Tweet.createAsync({
+            text: tweetToString,
+            tweetedBy: tweetedBy,
+            keywords: filterKeywords
+          });
+        }
       })
       .then(function(doc) {
         if (doc) {
-          console.log(chalk.green('Story Tweet Created: ' + tweetToString));
+          console.log(chalk.cyan('Story Tweet Created: ' + tweetToString));
         } else {
           console.log(chalk.gray('Old Story Tweeet: ' + tweetToString));
         }
         if (doc && storyLink) {
-          this.savedTweet = doc;
-          this.newStory = {
+          cache.newStories[storyLink] = {
             tweetedId: doc._id,
             link: storyLink,
             keywords: filterKeywords
@@ -68,9 +75,9 @@ var newsFilter = function(tweet) {
       .then(function(response) {
         if (response && response[0].statusCode === 200) {
           $ = cheerio.load(response[0].body);
-          this.newStory.title = $('head title').text();
-          this.newStory.description = commonFilters.getMetaDescription($('meta'));
-          this.newStory.img = commonFilters.getMetaImage($('meta'));
+          cache.newStories[storyLink].title = $('head title').text();
+          cache.newStories[storyLink].description = commonFilters.getMetaDescription($('meta'));
+          cache.newStories[storyLink].img = commonFilters.getMetaImage($('meta'));
 
           if (filterKeywords) {
             return Seed.findAsync({
@@ -83,22 +90,35 @@ var newsFilter = function(tweet) {
       })
       .then(function(doc) {
         if (doc && doc.length) {
-          this.newStory.seedID = doc[0]._id;
-          this.newStory.planted = true;
+          cache.newStories[storyLink].seedID = doc[0]._id;
+          cache.newStories[storyLink].planted = true;
         }
 
-        if (this.newStory) {
-          return Story.createAsync(this.newStory);
+        if (cache.newStories[storyLink]) {
+          return Story.createAsync(cache.newStories[storyLink]);
         }
       })
       .then(function(doc) {
         if (doc) {
-          console.log(chalk.green('New Story: ' + tweetToString));
-          cache.delete(storyLink);
+          console.log(chalk.white('New Story: ' + tweetToString));
         }
+
+        if(doc && cache.newStories[storyLink].planted) {
+          return Seed.findOneAndUpdateAsync(
+            { _id: cache.newStories[storyLink].seedID },
+            { $push: { associatedStoryIds: doc._id} },
+            { safe: true, upsert: true }
+          );
+        } else {
+          cache.delete('newStories', storyLink);
+        }
+      })
+      .then(function(doc){
+        cache.delete('newStories', storyLink);
       })
       .catch(function(err) {
         console.log(chalk.red(err));
+        cache.delete('newStories', storyLink);
       });
   }
 };
