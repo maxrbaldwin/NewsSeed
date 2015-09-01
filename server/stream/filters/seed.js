@@ -25,13 +25,22 @@ var seedFilter = function(tweet) {
   if (!cache.check(storyLink, tweetToString)) {
     cache.set(storyLink, tweetToString);
 
-    Tweet.createAsync({
-        text: tweetToString,
-        tweetedBy: tweetedBy
+    Tweet.findAsync({
+        text: tweetToString
+      })
+      .then(function(docs) {
+        if (docs && docs.length === 0) {
+          return Tweet.createAsync({
+            text: tweetToString,
+            tweetedBy: tweetedBy
+          });
+        }
       })
       .then(function(doc) {
         if (doc && filterKeywords) {
-          this.savedTweet = doc;
+          cache.savedTweets[storyLink] = doc;
+
+          console.log(chalk.cyan('Seed Tweet Created: ' + tweetToString));
 
           return Seed.findAsync({
             keywords: {
@@ -41,18 +50,21 @@ var seedFilter = function(tweet) {
         }
       })
       .then(function(docs) {
-        var newSeed = {
-          associatedStoryIds: [],
-          tweetId: this.savedTweet._id,
-          tweet: tweetToString,
-          link: storyLink,
-          keywords: filterKeywords
-        };
-        console.log(docs);
+        var newSeed;
 
-        if(docs && docs.length === 0) {
+        if (cache.savedTweets[storyLink]) {
+          newSeed = {
+            associatedStoryIds: [],
+            tweetId: cache.savedTweets[storyLink]._id,
+            tweet: tweetToString,
+            link: storyLink,
+            keywords: filterKeywords
+          };
+        }
+
+        if (docs && docs.length === 0) {
           return Seed.createAsync(newSeed);
-        } else if(docs.length > 0 && !commonFilters.testKeywords(filterKeywords, docs[0].keywords)) {
+        } else if (docs && !commonFilters.testKeywords(filterKeywords, docs[0].keywords)) {
           return Seed.createAsync(newSeed);
         }
       })
@@ -62,10 +74,13 @@ var seedFilter = function(tweet) {
         } else {
           console.log(chalk.gray('Old Seed: ' + tweetToString));
         }
-        cache.delete(storyLink);
+        cache.delete('savedTweets', storyLink);
+        cache.delete('stories', storyLink);
       })
       .catch(function(err) {
         console.log(chalk.red(err));
+        cache.delete('savedTweets', storyLink);
+        cache.delete('stories', storyLink);
       });
   }
 
