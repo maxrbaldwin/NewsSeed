@@ -1,10 +1,9 @@
 // Story, link is the key. Tweet is the next value it checks
 var cache = {
   stories: {},
+  newStories: {},
+  savedTweets: {},
   check: function(storyLink, tweetToString) {
-    // check for link as key.
-    // then check for tweet in the key.
-    // then maybe check tweeted by.
     if(this.stories[storyLink] && this.stories[storyLink].tweet && this.stories[storyLink].tweet === tweetToString) {
       return true;
     }
@@ -16,8 +15,8 @@ var cache = {
       tweet: tweetToString
     };
   },
-  delete: function(storyLink) {
-    delete this.stories[storyLink];
+  delete: function(key, storyLink) {
+    delete this[key][storyLink];
   }
 };
 
