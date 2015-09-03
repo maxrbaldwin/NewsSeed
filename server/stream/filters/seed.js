@@ -1,6 +1,6 @@
 var chalk = require('chalk');
 var Promise = require('bluebird');
-var mongoose = require('mongoose');
+var mongoose = Promise.promisifyAll(require('mongoose'));
 
 var commonFilters = require('./common');
 var cache = require('./cache');
