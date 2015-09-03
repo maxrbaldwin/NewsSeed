@@ -1,0 +1,33 @@
+<div class="story-nav list">
+  <button type="button" name="button" ng-click="resetFeed()">Reset</button>
+</div>
+<div class="story" ng-repeat="story in stories">
+  <div class="item seed-body" ng-if="story.tweet" ng-click="storyClick($index)">
+    <div class="seed-info">
+      <h2 class="seed-by">{{ story.tweet.tweetedBy }}</h2>
+      <!-- <span class="seed-time">{{ story.tweet.date }}</span> -->
+    </div>
+    <div class="seed-body">
+      <div class="seed-text item-text-wrap">
+        <p>{{ story.tweet.text }}</p>
+      </div>
+      <div class="seed-image">
+        <!-- {{ story.stories[0].img }} -->
+      </div>
+    </div>
+  </div>
+  <div class="story-body list-card" ng-if="!story.tweet && story.title && story.img && story.description && story.link">
+    <div class="story-title item item-avatar item-text-wrap">
+      {{ story.title }}
+    </div>
+    <div class="story-description item item-body item-text-wrap">
+      <img src="{{ story.img }}" class="full-image"/>
+      <p>
+        {{ story.description }}
+      </p>
+    </div>
+    <div class="story-link item tabs tabs-secondary">
+      {{ story.link }}
+    </div>
+  </div>
+</div>
