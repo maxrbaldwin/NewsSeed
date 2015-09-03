@@ -1,7 +1,7 @@
 var Router = require('express').Router();
 
-app.use('/seeds', require('./seeds'));
-app.use('/stories', require('./stories'));
-app.use('/tweets', require('./tweets'));
+Router.use('/seeds', require('./seeds'));
+// Router.use('/stories', require('./stories'));
+// Router.use('/tweets', require('./tweets'));
 
 module.exports = Router;
