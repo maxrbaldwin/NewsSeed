@@ -4,7 +4,8 @@ var Promise = require('bluebird');
 var mongoose = require('mongoose');
 var cheerio = require('cheerio');
 var request = require('request').defaults({
-  maxRedirects: 100
+  maxRedirects: 100,
+  jar: true
 });
 
 var commonFilters = require('./common');
@@ -66,6 +67,7 @@ var newsFilter = function(tweet) {
       .then(function(response) {
         if (response) {
           return Request.getAsync(response[0].request.href, {
+            followAllRedirects: true,
             headers: {
               "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.46 Safari/537.36"
             }
@@ -73,9 +75,10 @@ var newsFilter = function(tweet) {
         }
       })
       .then(function(response) {
+        // @TODO: Scrape meta keywords as well
         if (response && response[0].statusCode === 200) {
           $ = cheerio.load(response[0].body);
-          cache.newStories[storyLink].title = $('head title').text();
+          cache.newStories[storyLink].title = commonFilters.getPageTitle($('meta'));
           cache.newStories[storyLink].description = commonFilters.getMetaDescription($('meta'));
           cache.newStories[storyLink].img = commonFilters.getMetaImage($('meta'));
 
