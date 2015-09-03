@@ -65,29 +65,34 @@ var commonFilters = {
     var keys = Object.keys(meta);
 
     for (var i = 0; i < keys.length; i++) {
-      if (meta[i] && meta[i].attribs && meta[i].attribs.name && meta[i].attribs.name === 'description') {
-        return meta[i].attribs.content.trim();
-      } else if (meta[i] && meta[i].attribs && meta[i].attribs.name && meta[i].attribs.name === 'og:description') {
+      if (meta[i] && meta[i].attribs && meta[i].attribs.property && meta[i].attribs.property === 'og:description') {
         return meta[i].attribs.content.trim();
       } else if (meta[i] && meta[i].attribs && meta[i].attribs.name && meta[i].attribs.name === 'twitter:description') {
         return meta[i].attribs.content.trim();
       }
     }
-
-    return;
   },
   getMetaImage: function(meta) {
     var keys = Object.keys(meta);
 
     for (var i = 0; i < keys.length; i++) {
-      if (meta[i] && meta[i].attribs && meta[i].attribs.name && meta[i].attribs.name === 'og:image') {
+      if (meta[i] && meta[i].attribs && meta[i].attribs.property && meta[i].attribs.property === 'og:image') {
         return meta[i].attribs.content.trim();
-      } else if (meta[i] && meta[i].attribs && meta[i].attribs.name && meta[i].attribs.name === 'twitter:image:src') {
+      } else if (meta[i] && meta[i].attribs && meta[i].attribs.name && meta[i].attribs.name === 'twitter:image') {
         return meta[i].attribs.content.trim();
       }
     }
+  },
+  getPageTitle: function(meta) {
+    var keys = Object.keys(meta);
 
-    return;
+    for (var i = 0; i < keys.length; i++) {
+      if (meta[i] && meta[i].attribs && meta[i].attribs.property && meta[i].attribs.property === 'og:title') {
+        return meta[i].attribs.content.trim();
+      } else if (meta[i] && meta[i].attribs && meta[i].attribs.name && meta[i].attribs.name === 'twitter:title') {
+        return meta[i].attribs.content.trim();
+      }
+    }
   },
   getProperNoun: function(keywords, i, properNoun) {
     // if(this.isCapital(keywords[i + 1])) {
