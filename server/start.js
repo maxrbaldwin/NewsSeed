@@ -1,7 +1,7 @@
 var chalk = require('chalk');
 
-var app = require('./app');
 var startDb = require('./db');
+var app = require('./app');
 var startStream = require('./stream');
 
 var server = require('http').createServer();
