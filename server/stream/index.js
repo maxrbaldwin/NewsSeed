@@ -17,11 +17,11 @@ var client = new Twitter({
 });
 
 var seedStreamParameters = {
-  follow: env.STREAM_IDS.AP
+  follow: env.getStreamIDs('seeds')
 };
 
 var newsStreamParameters = {
-  follow: env.STREAM_IDS.NYT
+  follow: env.getStreamIDs('news')
 };
 
 client.stream('statuses/filter', seedStreamParameters, function(stream) {
