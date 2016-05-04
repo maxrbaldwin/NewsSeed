@@ -1,0 +1,43 @@
+@import 'variables';
+
+body {
+	overflow: hidden;
+}
+
+.nav-wrapper {
+	background: #fff;
+	max-height: 5vh;
+	padding: 0 20px;
+
+	.nav-right {
+		.nav-list {
+			.nav-list-item {
+				display: inline;
+				list-style: none;
+				margin-left: 20px;
+			}
+		}
+	}
+}
+
+.home-wrapper {
+	.container {
+		width: 50%;
+		height: 95vh;
+
+		&.intro {
+			text-align: center;
+
+			.statement {
+				margin-top: 40%;
+				// display: none;
+			}			
+		}
+
+		&.feed {
+			.new {
+				// display: none;
+			}
+		}
+	}
+}

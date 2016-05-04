@@ -13,6 +13,7 @@ var db = mongoose.connect(DATABASE_URI).connection;
 * Will envoke Schemas so that they can be accessed by other files
 * As mongoose.model
 **/
+
 require('./models');
 
 var startDb = new Promise(function(resolve, reject) {

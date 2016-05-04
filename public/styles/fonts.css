@@ -1,0 +1,22 @@
+@import url(https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic|Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic);
+h1, h2, h3 {
+  font-family: "Merriweather", serif;
+  font-weight: 300;
+  -webkit-margin-before: 5px;
+  -webkit-margin-after: 5px; }
+
+h1 {
+  font-size: 30px; }
+
+h2 {
+  font-size: 20px; }
+
+p, span, a, ul {
+  font-family: "Open Sans", sans-serif; }
+
+.small {
+  font-size: 14px;
+  font-weight: 300;
+  text-transform: uppercase; }
+
+/*# sourceMappingURL=fonts.css.map */

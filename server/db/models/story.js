@@ -9,6 +9,7 @@ var StorySchema = new Schema({
   link: String,
   img: String,
   description: String,
+  content: String,
   date: { type: Date, default: Date.now },
   keywords: [],
   planted: { type: Boolean, default: false }
