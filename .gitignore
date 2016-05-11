@@ -1,5 +1,5 @@
-/server/env
-server/env
+.env
+*/.env
 /server/env/development.js
 /server/env/production.js
 server/env/development.js
