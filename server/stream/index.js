@@ -1,27 +1,25 @@
 var chalk = require('chalk');
-var Promise = require('bluebird');
 var Twitter = require('twitter');
-var path = require('path');
+var env = require('dotenv').config();
 
 var seedFilter = require('./filters/seed');
 var newsFilter = require('./filters/news');
 var streamError = require('./error');
-
-var env = require(path.join(__dirname, '../env'));
+var streamIDs = require('./ids');
 
 var client = new Twitter({
-  consumer_key: env.STREAM.consumer_key,
-  consumer_secret: env.STREAM.consumer_secret,
-  access_token_key: env.STREAM.access_token_key,
-  access_token_secret: env.STREAM.access_token_secret
+  consumer_key: env.consumer_key,
+  consumer_secret: env.consumer_secret,
+  access_token_key: env.access_token_key,
+  access_token_secret: env.access_token_secret
 });
 
 var seedStreamParameters = {
-  follow: env.getStreamIDs('seeds')
+  follow: streamIDs.getStreamIDs('seeds')
 };
 
 var newsStreamParameters = {
-  follow: env.getStreamIDs('news')
+  follow: streamIDs.getStreamIDs('news')
 };
 
 client.stream('statuses/filter', seedStreamParameters, function(stream) {
