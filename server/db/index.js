@@ -1,13 +1,9 @@
 var chalk = require('chalk');
 var Promise = require('bluebird');
 var mongoose = require('mongoose');
-var path = require('path');
+var env = require('dotenv').config();
 
-var env = require(path.join(__dirname, '../env'));
-
-var DATABASE_URI = env.DATABASE_URI;
-
-var db = mongoose.connect(DATABASE_URI).connection;
+var db = mongoose.connect(env.DATABASE_URI).connection;
 
 /**
 * Will envoke Schemas so that they can be accessed by other files
