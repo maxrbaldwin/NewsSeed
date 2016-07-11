@@ -14,6 +14,7 @@
   "author": "Max Baldwin",
   "license": "MIT",
   "dependencies": {
+    "async": "^2.0.0-rc.6",
     "bluebird": "^2.9.34",
     "body-parser": "^1.13.3",
     "chalk": "^1.1.1",

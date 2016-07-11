@@ -1,5 +1,17 @@
-{% extends 'layout.html' %}
+{% extends 'layout.html' %} 
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="css/home.css"/>
+{% endblock %}
+
+{% block nav %}
+<div id="Nav" class="nav-bar nav-home"></div>
+{% endblock %}
 
 {% block body %}
-  <h1>News Seed</h1>
+<div id="Feed" class="ui container"></div>
+{% endblock %} 
+
+{% block scripts %}
+<script type="text/javascript" src="/js/Home.js"></script>
 {% endblock %}

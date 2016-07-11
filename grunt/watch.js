@@ -11,7 +11,7 @@ module.exports = {
     react: {
     	files: [
     		'react/*.jsx',
-    		'react/app/**/*.jsx'
+    		'react/**/*.jsx'
     	],
     	tasks: ['browserify'],
     	options: {

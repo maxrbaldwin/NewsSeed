@@ -23,6 +23,7 @@ var startServer = function() {
 var openSockets = function() {
     io.on('connection', sockets);
 }
+
 startDb.then(createApplication).then(startServer).then(startStream).catch(function(err){
   console.error(chalk.red(err.stack));
   process.kill(1);

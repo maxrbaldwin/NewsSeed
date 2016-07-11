@@ -1,4 +1,4 @@
-var emitter = require('./../emitter');
+var emitter = require('events').eventEmitter;
 
 var connection = function(socket) {
     emitter.on('news', function(doc){

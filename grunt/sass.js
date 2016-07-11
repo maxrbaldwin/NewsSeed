@@ -1,11 +1,11 @@
 module.exports = {
-  dist: {
-    files: [{
-      expand: true,
-      cwd: "sass",
-      src: ["**/*.scss"],
-      dest: "public/styles",
-      ext: '.css'
-    }]
-  }
-};
+	sass: {
+		files: [{
+			expand: true,
+			cwd: 'sass',
+			src: ['*.scss'],
+			dest: 'public/css/',
+			ext: '.css'
+		}]
+	}
+}

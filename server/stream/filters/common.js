@@ -42,16 +42,8 @@ var commonFilters = {
 
         return validKeywords.length > 10;
     },
-    getTweetedBy: function(keywords) {
-        var self = this;
-
-        for (var i = 0; i < keywords.length; i++) {
-            if (self.isAt(keywords[i])) {
-                if (keywords[i].slice(-1) === ':') {
-                    return keywords[i].substring(0, keywords[i].length - 1).trim();
-                }
-            }
-        }
+    getTweetedBy: function(tweet) {
+        return tweet.user.id;
     },
     getTweetLink: function(keywords) {
         // @TODO: check if the link ends with ".." or "..."
@@ -60,40 +52,6 @@ var commonFilters = {
                 return keywords[i].trim();
             }
         }
-    },
-    getMetaDescription: function(meta) {
-        var keys = Object.keys(meta);
-
-        for (var i = 0; i < keys.length; i++) {
-            if (meta[i] && meta[i].attribs && meta[i].attribs.name && meta[i].attribs.name === 'description') {
-                return meta[i].attribs.content.trim();
-            } else if (meta[i] && meta[i].attribs && meta[i].attribs.name && meta[i].attribs.name === 'og:description') {
-                return meta[i].attribs.content.trim();
-            } else if (meta[i] && meta[i].attribs && meta[i].attribs.name && meta[i].attribs.name === 'twitter:description') {
-                return meta[i].attribs.content.trim();
-            }
-        }
-
-        return;
-    },
-    getMetaImage: function(meta) {
-        var keys = Object.keys(meta);
-
-        for (var i = 0; i < keys.length; i++) {
-            if (meta[i] && meta[i].attribs && meta[i].attribs.name && meta[i].attribs.name === 'og:image') {
-                return meta[i].attribs.content.trim();
-            } else if (meta[i] && meta[i].attribs && meta[i].attribs.name && meta[i].attribs.name === 'twitter:image:src') {
-                return meta[i].attribs.content.trim();
-            }
-        }
-
-        return;
-    },
-    getProperNoun: function(keywords, i, properNoun) {
-        // if(this.isCapital(keywords[i + 1])) {
-        //   this.getProperNoun(keywords, i + 1, properNoun.contcat(keywords[i + 1]));
-        // }
-        return;
     }
 };
 
