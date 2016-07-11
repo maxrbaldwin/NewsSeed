@@ -12,6 +12,7 @@ events.EventEmitter.prototype._maxListeners = 100;
 var commonFilters = require('./common');
 var cache = require('./cache');
 var emitter = require('./../../emitter');
+var streamIDs = require('./../ids');
 
 var Story = Promise.promisifyAll(mongoose.model('Story'));
 var Tweet = Promise.promisifyAll(mongoose.model('Tweet'));
@@ -32,6 +33,11 @@ var newsFilter = function(tweet) {
         storyLink = commonFilters.getTweetLink(keywords);
     } else {
         return;
+    }
+
+    console.log(streamIDs.isTweetedByID('news', tweet.user.id));
+    if(streamIDs.isTweetedByID('news', tweet.user.id)) {
+        console.log(tweet);
     }
 
     if (!cache.check(storyLink, tweetToString)) {

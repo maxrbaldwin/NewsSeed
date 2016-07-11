@@ -43,4 +43,14 @@ streamIDS.getStreamIDs = function(streamKey) {
     return ids.toString();
 }
 
+streamIDS.isTweetedByID = function(streamKey, id) {
+    this[streamKey].forEach(function(el, i) {
+        if(el.id === parseInt(id)) {
+            return true
+        }
+    });
+
+    return false;
+}
+
 module.exports = streamIDS;
