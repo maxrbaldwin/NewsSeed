@@ -4,22 +4,28 @@ var Stream = mongoose.model('Stream');
 
 var streamIDS = function() {
     var view = {
-        fetchStreamIds: function(callback) {
+        initStream: function(key, callback) {
             var self = this;
 
-            Stream.find({}, function(err, response) {
-                self.streams = response;
-                callback(view.parseIds(response));
-            });
+            if (!this.streams) {
+                Stream.find({}, function(err, response) {
+                    self.streams = response;
+                    callback(view.parseStreams(key, response));
+                });
+            } else {
+                callback(view.parseStreams(key, response));
+            }
         },
-        parseIds: function(streams) {
-            var ids = [];
+        parseStreams: function(key, stream) {
+            var values = [];
 
-            streams.forEach(function(el, i) {
-                ids.push(el.twitterId);
+            stream.forEach(function(el, i) {
+                if (el[key]) {
+                    values.push(el[key].toString());
+                }
             });
 
-            return ids.toString();
+            return values.toString();
         },
         isTweetedByID: function(id) {
             var ids = this.streams.filter(function(el, i) {
@@ -33,7 +39,7 @@ var streamIDS = function() {
     }
 
     return {
-        fetchStreamIds: view.fetchStreamIds,
+        initStream: view.initStream,
         isTweetedByID: view.isTweetedByID
     }
 }();

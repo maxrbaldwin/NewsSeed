@@ -13,7 +13,7 @@ var client = new Twitter({
 });
 
 
-streamIDs.fetchStreamIds(function(ids) {
+streamIDs.initStream('twitterId', function(ids) {
     var newsStreamParameters = {
         follow: ids
     };

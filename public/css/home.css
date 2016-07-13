@@ -34,4 +34,14 @@ body {
 .clear {
   clear: both; }
 
+.addTo {
+  padding: 20px;
+  text-align: center;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px; }
+  .addTo .buttons {
+    margin-top: 20px; }
+
 /*# sourceMappingURL=home.css.map */
