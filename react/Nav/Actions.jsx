@@ -1,7 +1,8 @@
+// Nav actions
 var Reflux = require('reflux');
 
 var Actions = Reflux.createActions([
-	'handleButtonClick'
+	'buttonClicked'
 ]);
 
 module.exports = Actions;

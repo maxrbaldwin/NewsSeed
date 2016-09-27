@@ -1,13 +1,13 @@
 var Router = require('express').Router();
 var mongoose = require('mongoose');
-var Stream = mongoose.model('Stream');
+var Tweet = mongoose.model('Tweet');
 
 Router.get('/', function (req, res) {
-	var query = Stream.find({ twitterId: { $ne: null } }).limit(30);
+	var query = Tweet.find({ text: { $ne: null } }).sort({date: -1}).limit(30);
 		
-	query.exec(function (err, streams){
+	query.exec(function (err, tweets){
 		if(!err) {
-			res.send(streams);
+			res.send(tweets);
 		}
 	});
 });

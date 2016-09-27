@@ -1,33 +1,52 @@
 var React = require('react');
 var Reflux = require('reflux');
+
 var Store = require('./Store.jsx');
 var Actions = require('./Actions.jsx');
+var NavStore = require('./../Nav/Store.jsx')
 
 var Feed = React.createClass({
-	mixins: [Reflux.listenTo(Store, 'onChange')],
-	getInitalState: function () {
+	mixins: [
+		Reflux.listenTo(Store, 'handleStoreResponse'),
+		Reflux.listenTo(NavStore, 'handleButtonClick')
+	],
+	getInitialState: function () {
 		return {
-			values: []
+			key: this.props.initialKey,
+			users: {
+				values: []
+			},
+			keywords: {
+				values: []
+			},
 		}
 	},
-	componentWillMount: function () {
+	componentDidMount: function () {
 		// Onchange is listening
-		//Actions.getFeedByKey(this.props.listenTo)
+		Actions.getFeedByKey(this.state.key);
 	},
-	onChange: function(event, values) {
+	handleStoreResponse: function(event, data) {
 		// listens from componentWillMount
-		this.setState({ values: values })
+		this.setState(data)
 	},
-	renderValues: function () {
-		return this.state.values.map(function(value) {
-			return <li>
-				{value}
-			</li>
-		});
+	handleButtonClick: function (event, data) {
+		this.setState({key: data});
+	},
+	renderValues: function (key) {
+		if(this.state[key].values.length) {
+			return this.state[key].values.map(function(value, i) {
+				return <div className="tweet" key={i}>
+					<div className="tweetedBy">{value.tweetedBy}</div>
+					<a target="_blank" href={value.storyLink} className="tweetedText">{value.text}</a>
+				</div>
+			});
+		} else {
+			return <div>No values</div>
+		}
 	},
 	render: function() {
-		return <div className={"feed " + this.props.classes}>
-			{ this.renderValues }
+		return <div className={'feed ' + this.state.key}>
+			{ this.renderValues(this.state.key) }
 		</div>
 	}
 });

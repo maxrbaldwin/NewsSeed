@@ -72718,10 +72718,12 @@ function extend() {
 }
 
 },{}],435:[function(require,module,exports){
+// Feed actions
 var Reflux = require('reflux');
 
 var Actions = Reflux.createActions([
-	'getFeedByKey'
+	'getFeedByKey',
+	'submitStream'
 ]);
 
 module.exports = Actions;
@@ -72729,41 +72731,61 @@ module.exports = Actions;
 },{"reflux":318}],436:[function(require,module,exports){
 var React = require('react');
 var Reflux = require('reflux');
+
 var Store = require('./Store.jsx');
 var Actions = require('./Actions.jsx');
+var NavStore = require('./../Nav/Store.jsx')
 
 var Feed = React.createClass({displayName: "Feed",
-	mixins: [Reflux.listenTo(Store, 'onChange')],
-	getInitalState: function () {
+	mixins: [
+		Reflux.listenTo(Store, 'handleStoreResponse'),
+		Reflux.listenTo(NavStore, 'handleButtonClick')
+	],
+	getInitialState: function () {
 		return {
-			values: []
+			key: this.props.initialKey,
+			users: {
+				values: []
+			},
+			keywords: {
+				values: []
+			},
 		}
 	},
-	componentWillMount: function () {
+	componentDidMount: function () {
 		// Onchange is listening
-		//Actions.getFeedByKey(this.props.listenTo)
+		Actions.getFeedByKey(this.state.key);
 	},
-	onChange: function(event, values) {
+	handleStoreResponse: function(event, data) {
 		// listens from componentWillMount
-		this.setState({ values: values })
+		this.setState(data)
 	},
-	renderValues: function () {
-		return this.state.values.map(function(value) {
-			return React.createElement("li", null, 
-				value
-			)
-		});
+	handleButtonClick: function (event, data) {
+		this.setState({key: data});
+	},
+	renderValues: function (key) {
+		if(this.state[key].values.length) {
+			return this.state[key].values.map(function(value, i) {
+				return React.createElement("div", {className: "tweet", key: i}, 
+					React.createElement("div", {className: "tweetedBy"}, value.tweetedBy), 
+					React.createElement("a", {target: "_blank", href: value.storyLink, className: "tweetedText"}, value.text)
+				)
+			});
+		} else {
+			return React.createElement("div", null, "No values")
+		}
 	},
 	render: function() {
-		return React.createElement("div", {className: "feed " + this.props.classes}, 
-			 this.renderValues
+		return React.createElement("div", {className: 'feed ' + this.state.key}, 
+			 this.renderValues(this.state.key) 
 		)
 	}
 });
 
 module.exports = Feed;
 
-},{"./Actions.jsx":435,"./Store.jsx":437,"react":292,"reflux":318}],437:[function(require,module,exports){
+},{"./../Nav/Store.jsx":442,"./Actions.jsx":435,"./Store.jsx":437,"react":292,"reflux":318}],437:[function(require,module,exports){
+// Feed store
 var Reflux = require('reflux');
 var request = require('request');
 var Actions = require('./Actions.jsx');
@@ -72781,16 +72803,32 @@ var Store = Reflux.createStore({
 		maxPages: 5,
 	},
 	listenables: [Actions],
-	getFeedByKey: function (listenTo) {
-		request(this[listenTo].url, function(err, response, body) {
+	getFeedByKey: function (key) {
+		var self = this;
+
+		request(this[key].url, function(err, response, body) {
 			if (!err) {
-				this.triggerChange(listenTo, body)
+				self.triggerChange(key, JSON.parse(body))
 			}
 		});
 	},
-	triggerChange: function (key, data) {
-		this[key].values = data;
-		this.trigger('change', this[key].values);
+	submitStream: function (key, input) {
+		request(this[key].url + '/submit?stream=' + input, function(err, response, body) {
+			if(!err) {
+				console.log('body')
+			}
+		})
+	},
+	triggerChange: function (key, body) {
+		var data = {
+			key: key
+		}
+
+		data[key] = {};
+		data[key].values = body;
+
+		this[key].values = body;
+		this.trigger('change', data);
 	}
 });
 
@@ -72803,57 +72841,84 @@ var ReactDom = require('react-dom');
 var Feed = require('./Feed/Feed.jsx');
 var Nav = require('./Nav/Nav.jsx');
 
-ReactDom.render(React.createElement(Feed, {listenTo: "keywords"}), document.querySelector('#Keywords'));
-ReactDom.render(React.createElement(Feed, {listenTo: "users"}), document.querySelector('#Users'));
-ReactDom.render(React.createElement(Nav, null), document.querySelector('#Nav'));
+var App = React.createClass({displayName: "App",
+	getInitialState: function () {
+		return {
+			key: 'users'
+		}
+	},
+	render: function () {
+		return React.createElement("div", {className: "app"}, 
+			React.createElement(Feed, {initialKey: this.state.key, id: "Feed"}), 
+			React.createElement(Nav, {initialKey: this.state.key, id: "Nav"})
+		)
+	}
+});
+
+ReactDom.render(React.createElement(App, null), document.querySelector('#App'));
 
 },{"./Feed/Feed.jsx":436,"./Nav/Nav.jsx":440,"react":292,"react-dom":163}],439:[function(require,module,exports){
+// Nav actions
 var Reflux = require('reflux');
 
 var Actions = Reflux.createActions([
-	'handleButtonClick'
+	'buttonClicked'
 ]);
 
 module.exports = Actions;
 
 },{"reflux":318}],440:[function(require,module,exports){
 var React = require('react');
+var Reflux = require('reflux');
 
-var SearchButton = require('./SearchButton.jsx');
 var Store = require('./Store.jsx');
+var Actions = require('./Actions.jsx');
+var FeedActions = require('./../Feed/Actions.jsx');
+// Child components
+var SearchButton = require('./SearchButton.jsx');
 
-var AddTo = React.createClass({displayName: "AddTo",
-	getInitalState: function () {
+var Nav = React.createClass({displayName: "Nav",
+	getInitialState: function () {
 		return {
+			key: this.props.initialKey,
 			input: '',
-			keywords: false,
-			user: false,
 		}
 	},
 	handleChange: function (e) {
 		this.setState({input: e.target.value});
 	},
 	handleButtonClick: function (key) {
-		console.log(key);
+		this.setState({key: key});
+		Actions.buttonClicked(key);
+	},
+	handleAddClicked: function (e) {
+		var input = this.state.input;
+
+		if(input.length) {
+			FeedActions.submitStream(this.state.key, input);
+		}
 	},
 	render: function () {
-		return React.createElement("div", {className: "addTo"}, 
-			React.createElement("div", {className: "ui fluid input"}, 
-  				React.createElement("input", {type: "text", placeholder: "Add keywords or Twitter Handle", onChange: this.handleChange})
+		return React.createElement("div", {className: "nav"}, 
+			React.createElement("div", {className: "ui transparent icon fluid input"}, 
+  				React.createElement("input", {onChange: this.handleChange, type: "text", placeholder: "Add keywords or a Twitter handle"}), 
+  				React.createElement("a", {href: "#", onClick: this.handleAddClicked}, 
+  					React.createElement("i", {className: "plus square outline icon"})
+  				)
 			), 
 			React.createElement("div", {className: "clear"}), 
 			React.createElement("div", {className: "ui buttons"}, 
   				React.createElement(SearchButton, {click: this.handleButtonClick, stateKey: "keywords", text: "Keywords"}), 
   				React.createElement("div", {className: "or"}), 
-  				React.createElement(SearchButton, {click: this.handleButtonClick, stateKey: "user", text: "Twitter Handle"})
+  				React.createElement(SearchButton, {click: this.handleButtonClick, stateKey: "users", text: "Twitter Handle"})
 			)
 		)
 	}
 });
 
-module.exports = AddTo;
+module.exports = Nav;
 
-},{"./SearchButton.jsx":441,"./Store.jsx":442,"react":292}],441:[function(require,module,exports){
+},{"./../Feed/Actions.jsx":435,"./Actions.jsx":439,"./SearchButton.jsx":441,"./Store.jsx":442,"react":292,"reflux":318}],441:[function(require,module,exports){
 var React = require('react');
 
 var SearchButton = React.createClass({displayName: "SearchButton",
@@ -72861,13 +72926,14 @@ var SearchButton = React.createClass({displayName: "SearchButton",
 		this.props.click(this.props.stateKey)
 	},
 	render: function () {
-		return React.createElement("button", {onClick: this.handleClick, stateKey: this.props.stateKey, className: "ui button"}, this.props.text)
+		return React.createElement("button", {onClick: this.handleClick, className: "ui button"}, this.props.text)
 	}
 });
 
 module.exports = SearchButton;
 
 },{"react":292}],442:[function(require,module,exports){
+// Nav store
 var Reflux = require('reflux');
 var request = require('request');
 var Actions = require('./Actions.jsx');
@@ -72884,18 +72950,12 @@ var Store = Reflux.createStore({
 		values: []
 	},
 	listenables: [Actions],
-	handleButtonClick: function (key) {
-		this[key].action()
-		request(this[listenTo].url, function(err, response, body) {
-			if (!err) {
-				this.triggerChange(listenTo, body)
-			}
-		});
+	buttonClicked: function (key, input) {
+		this.triggerClick('click', key)
 	},
-	triggerChange: function (key, data) {
-		this[key].values = data;
-		this.trigger('change', this[key].values);
-	}
+	triggerClick: function (event, key) {
+		this.trigger(event, key);
+	},
 });
 
 module.exports = Store;

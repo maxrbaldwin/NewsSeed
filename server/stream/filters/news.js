@@ -17,6 +17,8 @@ var newsFilter = function(tweet) {
     var keywords = tweetToString.split(' ');
     var tweetId = tweet.id;
 
+    console.log('New Tweet: ' + tweetToString);
+
     if (streamIDs.isTweetedByID(tweet.user.id)) {
         filterKeywords = commonFilters.filterKeywords(keywords);
         storyLink = commonFilters.getTweetLink(keywords);

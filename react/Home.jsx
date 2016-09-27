@@ -4,6 +4,18 @@ var ReactDom = require('react-dom');
 var Feed = require('./Feed/Feed.jsx');
 var Nav = require('./Nav/Nav.jsx');
 
-ReactDom.render(<Feed listenTo="keywords" />, document.querySelector('#Keywords'));
-ReactDom.render(<Feed listenTo="users" />, document.querySelector('#Users'));
-ReactDom.render(<Nav />, document.querySelector('#Nav'));
+var App = React.createClass({
+	getInitialState: function () {
+		return {
+			key: 'users'
+		}
+	},
+	render: function () {
+		return <div className="app">
+			<Feed initialKey={this.state.key} id="Feed" />
+			<Nav initialKey={this.state.key} id="Nav" />
+		</div>
+	}
+});
+
+ReactDom.render(<App />, document.querySelector('#App'));

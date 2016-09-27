@@ -1,3 +1,4 @@
+// Nav store
 var Reflux = require('reflux');
 var request = require('request');
 var Actions = require('./Actions.jsx');
@@ -14,18 +15,12 @@ var Store = Reflux.createStore({
 		values: []
 	},
 	listenables: [Actions],
-	handleButtonClick: function (key) {
-		this[key].action()
-		request(this[listenTo].url, function(err, response, body) {
-			if (!err) {
-				this.triggerChange(listenTo, body)
-			}
-		});
+	buttonClicked: function (key, input) {
+		this.triggerClick('click', key)
 	},
-	triggerChange: function (key, data) {
-		this[key].values = data;
-		this.trigger('change', this[key].values);
-	}
+	triggerClick: function (event, key) {
+		this.trigger(event, key);
+	},
 });
 
 module.exports = Store;

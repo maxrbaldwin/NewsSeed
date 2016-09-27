@@ -1,3 +1,4 @@
+// Feed store
 var Reflux = require('reflux');
 var request = require('request');
 var Actions = require('./Actions.jsx');
@@ -15,16 +16,32 @@ var Store = Reflux.createStore({
 		maxPages: 5,
 	},
 	listenables: [Actions],
-	getFeedByKey: function (listenTo) {
-		request(this[listenTo].url, function(err, response, body) {
+	getFeedByKey: function (key) {
+		var self = this;
+
+		request(this[key].url, function(err, response, body) {
 			if (!err) {
-				this.triggerChange(listenTo, body)
+				self.triggerChange(key, JSON.parse(body))
 			}
 		});
 	},
-	triggerChange: function (key, data) {
-		this[key].values = data;
-		this.trigger('change', this[key].values);
+	submitStream: function (key, input) {
+		request(this[key].url + '/submit?stream=' + input, function(err, response, body) {
+			if(!err) {
+				console.log('body')
+			}
+		})
+	},
+	triggerChange: function (key, body) {
+		var data = {
+			key: key
+		}
+
+		data[key] = {};
+		data[key].values = body;
+
+		this[key].values = body;
+		this.trigger('change', data);
 	}
 });
 

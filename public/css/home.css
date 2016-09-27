@@ -34,14 +34,34 @@ body {
 .clear {
   clear: both; }
 
-.addTo {
+body {
+  background: #f2f2f2; }
+
+#App {
+  background: #fff;
+  max-width: 50% !important;
+  height: 100vh;
+  position: relative; }
+  #App .feed {
+    padding: 20px;
+    height: 85vh;
+    overflow: scroll;
+    overflow-x: hidden; }
+
+.nav {
   padding: 20px;
   text-align: center;
   position: absolute;
   bottom: 0px;
   left: 0px;
   right: 0px; }
-  .addTo .buttons {
+  .nav .buttons {
     margin-top: 20px; }
+
+.tweet {
+  margin: 20px 0px;
+  background: #f2f2f2;
+  padding: 10px;
+  .tweetedBy-margin-bottom: 20px; }
 
 /*# sourceMappingURL=home.css.map */
